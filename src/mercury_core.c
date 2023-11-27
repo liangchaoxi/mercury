@@ -203,7 +203,14 @@ struct hg_core_private_addr {
     hg_atomic_int32_t ref_count; /* Reference count */
 };
 
-/* HG core op type */
+/*HG_CORE_FORWARD：表明一个发送RPC请求（forward an RPC）的操作已完成。"forward"通常指的是客户端向服务端发送请求。
+HG_CORE_RESPOND：表示响应RPC请求的操作已完成。这是指服务端处理请求并返回结果给客户端的步骤。
+HG_CORE_NO_RESPOND：服务端决定不对RPC请求进行响应。这可能发生在一些请求不需要响应或因为某些原因服务端无法处理请求的场景。
+HG_CORE_FORWARD_SELF：自我转发的操作已完成。"Self forward"通常在没有网络操作涉及的情况下使用，比如在同一进程内的不同线程之间模拟RPC调用。
+HG_CORE_RESPOND_SELF：自我转发RPC请求的响应已完成。这同样用于无网络操作的场景，实现进程内部的响应模式。
+HG_CORE_PROCESS：已经接收到的请求被处理完成。这不仅仅是收到请求的通知，而是指完成了对请求数据的处理，并准备好进行响应发送的操作。
+
+HG core op type */
 typedef enum {
     HG_CORE_FORWARD,      /*!< Forward completion */
     HG_CORE_RESPOND,      /*!< Respond completion */

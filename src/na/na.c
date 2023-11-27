@@ -1191,6 +1191,7 @@ error:
 }
 
 /*---------------------------------------------------------------------------*/
+/*函数注释见na.h头文件*/
 #ifdef NA_HAS_MULTI_PROGRESS
 na_return_t
 NA_Progress(
@@ -1309,6 +1310,7 @@ NA_Progress(
 #endif
 
 /*---------------------------------------------------------------------------*/
+/*函数注释见na.h头文件*/
 na_return_t
 NA_Trigger(na_context_t *context, unsigned int timeout_ms,
     unsigned int max_count, int callback_ret[], unsigned int *actual_count)

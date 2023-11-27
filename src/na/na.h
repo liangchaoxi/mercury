@@ -809,7 +809,13 @@ NA_Poll_get_fd(
 NA_PUBLIC bool
 NA_Poll_try_wait(na_class_t *na_class, na_context_t *context);
 
+/*NA_Trigger和NA_Progress是两个用来处理网络通信活动的重要函数。它们是Network Abstraction（NA）层的一部分，
+这一层为Mercury提供了一个统一的网络接口，用来屏蔽不同网络协议的详细差异，以便于Mercury可以在各种不同的网络
+环境中操作。na_return_t是一个枚举，定义了NA层函数可能返回的值，表明函数的执行结果，例如成功、失败或超时等。*/
+
 /**
+ 调用这个函数是为了推动通信的进展，确保异步操作（如非阻塞发送和接收）能够继续处理。
+ 例如，该函数可能涉及处理网络队列中的事件、处理传入的消息以及处理任何其他需要被驱动的网络通信操作。
  * Try to progress communication for at most timeout until timeout is reached or
  * any completion has occurred.
  * Progress should not be considered as wait, in the sense that it cannot be
@@ -825,7 +831,19 @@ NA_Poll_try_wait(na_class_t *na_class, na_context_t *context);
 NA_PUBLIC na_return_t
 NA_Progress(na_class_t *na_class, na_context_t *context, unsigned int timeout);
 
+
 /**
+ 这个函数用来触发已经准备好的（或已经完成的）网络通信事件的回调函数。
+ *context  是网络通信的上下文。
+ *timeout  是等待事件的最大超时时间（以毫秒为单位）。
+ *max_count      是这次调用要触发的最大事件数量。
+ *callback_ret[] 是一个输出数组，用于存储回调函数的返回值。
+ *actual_count   是一个输出指针，用来返回实际触发的事件数量。
+ *函数返回NA_SUCCESS如果至少一个回调被成功触发，如果未触发任何回调或者发生错误，则返回相应的NA错误代码。
+ 
+ 函数用于处理异步通信模式下的事件，当事件完成时（例如，消息被发送或收到），
+ 与事件相关联的回调函数将被调用。这样，NA层可以通知上层应用哪些事件已经发生，并执行相应的操作。
+
  * Execute at most max_count callbacks. If timeout is non-zero, wait up to
  * timeout before returning. Function can return when at least one or more
  * callbacks are triggered (at most max_count).
